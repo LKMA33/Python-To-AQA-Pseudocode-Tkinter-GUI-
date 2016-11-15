@@ -15,13 +15,15 @@ The initial Pseudocode spec can be found here http://filestore.aqa.org.uk/subjec
 How to use
 -----------
 
-Grab a copy of python-pseudocoder.py   
-Open the file in a text editor and locate    
-**pythonFile = "test.py"**   
-Modify test.py to the full path of your python file you want to convert.   
-Then run python-pseudocoder.py   
-To run, you can hit run in IDLE or you can open a terminal, cd to the directory and run   
-```python python-pseudocoder.py```   
+Run python-pseudocoder.py
+
+File Location - will allow you to select the file to convert
+
+Convert - Run the main program, so convert the whole python file into Pseudo code
+that then Closes the program
+
+Quit - Closes the program
+
 
 Example
 -------
