@@ -1,4 +1,3 @@
-
 #Python-to-AQA-psudocode converter
 #By Andrew Mulholland aka gbaman
 
@@ -12,20 +11,16 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
 
-
-
 #Enter the file name of the python file you want to convert below
 #You should use its full file path
-pythonFile = "test.py"
 
 
-
-
-import time
+import tkinter as tk
+from tkinter import *
+import os.path
+from tkinter import ttk, filedialog, messagebox, colorchooser
 from logging import debug, info, warning, basicConfig, INFO, DEBUG, WARNING
 basicConfig(level=WARNING)
-
-
 
 def getTextFile(filep):
     """
@@ -158,14 +153,6 @@ def writeTextFile(svgfile, name = "/Users/andrew/PycharmProjects/Experiments/psu
         mainstr = mainstr + svgfile[i] + "\n"
     file.write(mainstr)
     file.close()
-    print("")
-    print("------------------------")
-    print("Psudocode file generated")
-    print("The file can be found at " + name)
-    print("------------------------")
-    print("")
-
-
 
 
 def indentationFinder(svgfile, linesToAvoid):
@@ -316,12 +303,11 @@ def removeEndBit(theLine, toRemove):
 
 def main(filename):
 
-    print("Now working on " + filename)
     svgfile = getTextFile(filename)                             #Converts text file to a list of lists
     svgfile = removeN(svgfile)                                  #Removes \n (a special escape character that means newline)
     svgfile = blankLineRemover(svgfile)                         #Removes all blank lines from the file, makes easier to work with
     linesToAvoid = multiLineCommentTracker(svgfile)             #Adds lines to be ignored by the replacers, mainly just multiline comments
-    print("Searching through file, this may take a while")
+
 
     clues = [["elif", "~~~"],]
 
@@ -355,20 +341,57 @@ def main(filename):
 
     writeTextFile(svgfile, filename)                            #Finally write the new text file!
 
-
-
-
-#-----------------------------------Main program----------------------------------------
-#-----------------------------------Main program----------------------------------------
 #-----------------------------------Main program----------------------------------------
 
 
+class Converter(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        tk.Tk.wm_title(self, "Pseudo Code Converter")
 
-main(pythonFile)
+        tk.Label(self, text="Python to Pseudo Code Converter", font=("Verdana", 15)).pack(padx=10, pady=10)
+
+        self.var = StringVar()
+        self.var.set("There is no current file selected")
+
+        tk.Label(self, textvariable=self.var).pack(padx=10, pady=10)
+        ttk.Button(self, text="File Location", command=lambda: filelocation()).pack(ipady=10, ipadx=11)
+        ttk.Button(self, text="Convert", command=lambda: convert()).pack(ipady=10, ipadx=11)
+        ttk.Button(self, text="Quit", command=lambda: self.destroy()).pack(ipady=10, ipadx=11)
+
+    def labelupdate(self,content):
+        self.var.set(content)
 
 
-print("")
-print("")
-print("----------------")
-print("Process complete")
-print("----------------")
+app = Converter()
+
+
+def convert():
+    try:
+        if pythonFile != None:
+            try:
+                main(pythonFile)
+                messagebox.showinfo(title="Complete", message="File Converted.")
+            except FileNotFoundError:
+                messagebox.showinfo(title="Error", message="Please put the file to be converted on the same folder.")
+                app.quit()
+
+        else:
+            messagebox.showinfo(title="Error", message="Please Select the file to convert.")
+            filelocation()
+
+    except NameError:
+        messagebox.showinfo(title="Error", message="Please select the file, the file to be converted has to be on the same folder.")
+
+
+def filelocation():
+    global pythonFile
+
+    pythonFile = filedialog.askopenfilename()
+    pythonFile = os.path.basename(pythonFile)
+    content = str(pythonFile) + " is now selected."
+    app.labelupdate(content)
+
+    return pythonFile
+
+app.mainloop()
